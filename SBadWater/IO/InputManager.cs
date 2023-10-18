@@ -34,7 +34,7 @@ namespace SBadWater.IO
 
             foreach (InputKey key in Enum.GetValues<InputKey>())
             {
-                _maxHoldCooldowns[key] = 1000f;
+                _maxHoldCooldowns[key] = 200f;
                 _holdCooldowns[key] = 0f;
                 _totalHoldDurations[key] = 0f;
             }

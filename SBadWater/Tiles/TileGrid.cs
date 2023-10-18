@@ -62,6 +62,11 @@ namespace SBadWater.Tiles
         public void Update(float elapsedTimeMs)
         {
             _inputManager.Update(elapsedTimeMs);
+
+            for (int i = 0; i < _tiles.Length; i++)
+            {
+                _tiles[i].UpdateFlow();
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -128,6 +133,7 @@ namespace SBadWater.Tiles
 
                 if (_clickedTile != null)
                 {
+                    _clickedTile.Capacity += 500;
                     Debug.WriteLine($"Index: {_clickedTile.Index}");
                     Debug.WriteLine($"Col: {_clickedTile.X}");
                     Debug.WriteLine($"Row: {_clickedTile.Y}");

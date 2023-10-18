@@ -10,8 +10,6 @@ namespace SBadWater
     {
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private readonly InputManager _inputManager;
-        private readonly float _lastUpdateMs = 0f;
         private TileGrid _tileGrid;
         private Texture2D _pixelTexture;
         private SpriteFont _font;
@@ -30,8 +28,8 @@ namespace SBadWater
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _pixelTexture = new Texture2D(GraphicsDevice, 1, 1);
+            _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
+            _pixelTexture = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             _pixelTexture.SetData(new Color[] { Color.White });
             _font = Content.Load<SpriteFont>("Cascadia");
 
@@ -52,7 +50,7 @@ namespace SBadWater
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkCyan);
+            _graphics.GraphicsDevice.Clear(Color.DarkCyan);
 
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 
