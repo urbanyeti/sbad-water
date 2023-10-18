@@ -42,10 +42,10 @@ namespace SBadWater.Tiles
                 for (int col = 0; col < Columns; col++)
                 {
                     int index = (row * Columns) + col;
-                    int x = (col * 20) + 10;
-                    int y = (row * 20) + 10;
+                    int x = (col * 20) + 120;
+                    int y = (row * 20) + 40;
 
-                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 20, 20), Color.CornflowerBlue, 0, col, row, index, PassableTiles[index]);
+                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 20, 20), Color.White, 0, col, row, index, PassableTiles[index]);
 
                     if (col > 0)
                     {
@@ -210,23 +210,27 @@ namespace SBadWater.Tiles
 
         private void DrawTileInfo(SpriteBatch spriteBatch)
         {
-            int infoX = 420 /*some x-coordinate on the side*/;
-            int infoY = 10 /*some y-coordinate on the side*/;
-            int spacing = 20;  // Spacing between lines of text.
+            int infoX = 540 /*some x-coordinate on the side*/;
+            int infoY = 140 /*some y-coordinate on the side*/;
+            int spacing = 30;  // Spacing between lines of text.
 
-            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), Color.Black);
+            string hex = "#1EFF00";
+            System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
+            Color xnaColor = new(color.R, color.G, color.B);
+
+            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), xnaColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), Color.Black);
+            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), xnaColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), Color.Black);
+            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), xnaColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), Color.Black);
+            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), xnaColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), Color.Black);
+            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), xnaColor);
         }
     }
 

@@ -8,7 +8,7 @@ namespace SBadWater.Tiles
         public Rectangle Rectangle { get; set; }
         public Color Color
         {
-            get => Passable ? color : Color.DarkGray;
+            get => Passable ? color : Color.Gray;
             set => color = new Color(value, capacity);
 
         }
