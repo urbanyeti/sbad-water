@@ -5,7 +5,10 @@ using Newtonsoft.Json;
 using SBadWater.IO;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SBadWater.Tiles
 {
@@ -14,6 +17,48 @@ namespace SBadWater.Tiles
         public int Columns => _config.Columns;
         public int Rows => _config.Rows;
         public bool[] PassableTiles => _config.PassableTiles;
+        public Texture2D[] TileBorderTextures
+        {
+            get { return _tileBorderTextures; }
+            set
+            {
+                _tileBorderTextures = value;
+                if (_tileBorderTextures == null)
+                {
+                    _tileBorderIndex = null;
+                    return;
+                }
+
+                _tileBorderIndex = new int[_tiles.Length];
+                Random random = new();
+                for (int i= 0; i < _tiles.Length; i++)
+                {
+                    _tileBorderIndex[i] = random.Next(_tileBorderTextures.Length);
+                }
+            }
+        }
+
+        public Texture2D[] TileColorTextures
+        {
+            get { return _tileColorTextures; }
+            set
+            {
+                _tileColorTextures = value;
+                if (_tileColorTextures == null)
+                {
+                    _tileColorTextures = null;
+                    return;
+                }
+
+                _tileColorIndex = new int[_tiles.Length];
+                Random random = new();
+                for (int i = 0; i < _tiles.Length; i++)
+                {
+                    _tileColorIndex[i] = random.Next(_tileColorTextures.Length);
+                }
+            }
+        }
+
         public Theme Theme
         {
             get { return _theme; }
@@ -30,6 +75,9 @@ namespace SBadWater.Tiles
                         System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
                         _textColor = new(color.R, color.G, color.B);
                         break;
+                    case Theme.Sketch:
+                        _textColor = Color.DarkSlateBlue;
+                        break;
                 }
             }
         }
@@ -39,12 +87,17 @@ namespace SBadWater.Tiles
         private readonly LiquidTile[] _tiles;
         private readonly InputManager _inputManager;
         private readonly Texture2D _texture;
+
         private readonly SpriteFont _font;
         private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
         private LiquidTile _hoveredTile;
         private LiquidTile _clickedTile;
         private Theme _theme;
         private Color _textColor;
+        private Texture2D[] _tileBorderTextures;
+        private int[] _tileBorderIndex;
+        private Texture2D[] _tileColorTextures;
+        private int[] _tileColorIndex;
 
 
         public TileGrid(TileGridConfig config, Texture2D texture, SpriteFont font, Theme theme = Theme.Classic)
@@ -101,22 +154,30 @@ namespace SBadWater.Tiles
             {
                 LiquidTile tile = _tiles[i];
                 if (tile == null) { continue; }
-                spriteBatch.Draw(_texture, _tiles[i].Rectangle, tile.Color);
+
+                if (_tileColorTextures == null)
+                {
+                    spriteBatch.Draw(_texture, _tiles[i].Rectangle, tile.Color);
+                } else
+                {
+                    spriteBatch.Draw(_tileColorTextures[_tileColorIndex[i]], _tiles[i].Rectangle, tile.Color);
+                }
+
                 if (tile == _clickedTile)
                 {
-                    DrawBorder(spriteBatch, tile.Rectangle, 1, Color.Red);
+                    DrawBorder(spriteBatch, tile, 1, Color.Red);
                 }
                 else if (_beamedTiles.ContainsKey(tile))
                 {
-                    DrawBorder(spriteBatch, tile.Rectangle, 2, Color.Green);
+                    DrawBorder(spriteBatch, tile, 2, Color.Green);
                 }
                 else if (tile == _hoveredTile)
                 {
-                    DrawBorder(spriteBatch, tile.Rectangle, 1, Color.Yellow);  // 2 is the border thickness here.
+                    DrawBorder(spriteBatch, tile, 1, Color.Yellow);
                 }
                 else
                 {
-                    DrawBorder(spriteBatch, tile.Rectangle, 1, Color.Black);
+                    DrawBorder(spriteBatch, tile, 1, Color.Black);
                 }
             }
 
@@ -216,22 +277,29 @@ namespace SBadWater.Tiles
         }
 
         // Utility method to draw a border around a rectangle.
-        private void DrawBorder(SpriteBatch spriteBatch, Rectangle rectangleToDraw, int thicknessOfBorder, Color borderColor)
+        private void DrawBorder(SpriteBatch spriteBatch, LiquidTile tile, int thicknessOfBorder, Color borderColor)
         {
-            // Draw top line
-            spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+            Rectangle rectangleToDraw = tile.Rectangle;
+            if (TileBorderTextures == null)
+            {
+                // Draw top line
+                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
 
-            // Draw left line
-            spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
+                // Draw left line
+                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
 
-            // Draw right line
-            spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
-                                                  rectangleToDraw.Y,
-                                                  thicknessOfBorder,
-                                                  rectangleToDraw.Height), borderColor);
+                // Draw right line
+                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
+                                                      rectangleToDraw.Y,
+                                                      thicknessOfBorder,
+                                                      rectangleToDraw.Height), borderColor);
 
-            // Draw bottom line
-            spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+                // Draw bottom line
+                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+                return;
+            }
+            spriteBatch.Draw(TileBorderTextures[_tileBorderIndex[tile.Index]], rectangleToDraw, borderColor);
+
         }
 
         private void DrawTileInfo(SpriteBatch spriteBatch)

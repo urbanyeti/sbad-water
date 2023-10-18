@@ -3,6 +3,7 @@
     public enum Theme
     {
         Classic,
-        Retro
+        Retro,
+        Sketch
     }
 }
