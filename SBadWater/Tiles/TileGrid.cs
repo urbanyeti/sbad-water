@@ -170,7 +170,10 @@ namespace SBadWater.Tiles
             if (key == InputKey.LeftButton)
             {
                 _clickedTile = _hoveredTile;
-                _clickedTile.Capacity += 500;
+                if (_clickedTile.Passable)
+                {
+                    _clickedTile.Capacity += 500;
+                }
             }
 
             if (key == InputKey.RightButton)
