@@ -11,21 +11,43 @@ namespace SBadWater.Tiles
 {
     public class TileGrid
     {
+        public int Columns => _config.Columns;
+        public int Rows => _config.Rows;
+        public bool[] PassableTiles => _config.PassableTiles;
+        public Theme Theme
+        {
+            get { return _theme; }
+            set
+            {
+                _theme = value;
+                switch (_theme)
+                {
+                    case Theme.Classic:
+                        _textColor = Color.White;
+                        break;
+                    case Theme.Retro:
+                        string hex = "#1EFF00";
+                        System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
+                        _textColor = new(color.R, color.G, color.B);
+                        break;
+                }
+            }
+        }
+
         private readonly TileGridConfig _config;
 
         private readonly LiquidTile[] _tiles;
         private readonly InputManager _inputManager;
         private readonly Texture2D _texture;
         private readonly SpriteFont _font;
+        private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
         private LiquidTile _hoveredTile;
         private LiquidTile _clickedTile;
-        private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
+        private Theme _theme;
+        private Color _textColor;
 
-        public int Columns => _config.Columns;
-        public int Rows => _config.Rows;
-        public bool[] PassableTiles => _config.PassableTiles;
 
-        public TileGrid(TileGridConfig config, Texture2D texture, SpriteFont font)
+        public TileGrid(TileGridConfig config, Texture2D texture, SpriteFont font, Theme theme = Theme.Classic)
         {
             _config = config;
             _texture = texture;
@@ -36,6 +58,7 @@ namespace SBadWater.Tiles
             _inputManager.OnButtonReleased += ButtonReleased;
             _inputManager.OnMouseMoved += MouseMoved;
 
+            Theme = theme;
 
             for (int row = 0; row < Rows; row++)
             {
@@ -103,11 +126,11 @@ namespace SBadWater.Tiles
             }
         }
 
-        public static TileGrid LoadFromConfig(Texture2D texture, SpriteFont font, string path = "config//default_tiles.json")
+        public static TileGrid LoadFromConfig(Texture2D texture, SpriteFont font, Theme theme, string path = "config//default_tiles.json")
         {
             string json = File.ReadAllText(path);
             TileGridConfig config = JsonConvert.DeserializeObject<TileGridConfig>(json);
-            return new TileGrid(config, texture, font);
+            return new TileGrid(config, texture, font, theme);
         }
 
         private void MouseMoved(MouseState mouseState, MouseState oldMouseState)
@@ -214,23 +237,19 @@ namespace SBadWater.Tiles
             int infoY = 140 /*some y-coordinate on the side*/;
             int spacing = 30;  // Spacing between lines of text.
 
-            string hex = "#1EFF00";
-            System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
-            Color xnaColor = new(color.R, color.G, color.B);
-
-            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), xnaColor);
+            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), _textColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), xnaColor);
+            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), _textColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), xnaColor);
+            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), _textColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), xnaColor);
+            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), _textColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), xnaColor);
+            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), _textColor);
         }
     }
 
