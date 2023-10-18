@@ -3,7 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using SBadWater.IO;
-using System.Diagnostics;
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SBadWater.Tiles
@@ -18,6 +19,7 @@ namespace SBadWater.Tiles
         private readonly SpriteFont _font;
         private LiquidTile _hoveredTile;
         private LiquidTile _clickedTile;
+        private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
 
         public int Columns => _config.Columns;
         public int Rows => _config.Rows;
@@ -33,6 +35,7 @@ namespace SBadWater.Tiles
             _inputManager.OnButtonPressed += ButtonPressed;
             _inputManager.OnButtonReleased += ButtonReleased;
             _inputManager.OnMouseMoved += MouseMoved;
+
 
             for (int row = 0; row < Rows; row++)
             {
@@ -80,6 +83,10 @@ namespace SBadWater.Tiles
                 {
                     DrawBorder(spriteBatch, tile.Rectangle, 1, Color.Red);
                 }
+                else if (_beamedTiles.ContainsKey(tile))
+                {
+                    DrawBorder(spriteBatch, tile.Rectangle, 2, Color.Green);
+                }
                 else if (tile == _hoveredTile)
                 {
                     DrawBorder(spriteBatch, tile.Rectangle, 1, Color.Yellow);  // 2 is the border thickness here.
@@ -123,20 +130,42 @@ namespace SBadWater.Tiles
                 ButtonPressed(InputKey.LeftButton, 0f);
             }
 
+            if (mouseState.RightButton == ButtonState.Pressed && _hoveredTile != oldHoverTile)
+            {
+                ButtonPressed(InputKey.RightButton, 0f);
+            }
+
         }
 
         private void ButtonPressed(InputKey key, float holdDurationMs)
         {
+            if (_hoveredTile == null)
+            {
+                return;
+            }
+
             if (key == InputKey.LeftButton)
             {
                 _clickedTile = _hoveredTile;
+                _clickedTile.Capacity += 500;
+            }
 
-                if (_clickedTile != null)
+            if (key == InputKey.RightButton)
+            {
+                _beamedTiles.Clear();
+                // Calculate column and row of _hoveredTile
+                int hoveredColumn = _hoveredTile.Index % Columns;
+                int hoveredRow = _hoveredTile.Index / Columns;
+
+                // Loop through tiles in the same column as _hoveredTile and below it
+                for (int row = hoveredRow; row < Rows; row++)
                 {
-                    _clickedTile.Capacity += 500;
-                    Debug.WriteLine($"Index: {_clickedTile.Index}");
-                    Debug.WriteLine($"Col: {_clickedTile.X}");
-                    Debug.WriteLine($"Row: {_clickedTile.Y}");
+                    int tileIndex = (row * Columns) + hoveredColumn;
+                    if (PassableTiles[tileIndex])
+                    {
+                        _beamedTiles[_tiles[tileIndex]] = true;
+                        _tiles[tileIndex].Capacity = Math.Max(_tiles[tileIndex].Capacity - 100, 0);
+                    }
                 }
             }
         }
@@ -146,6 +175,13 @@ namespace SBadWater.Tiles
             if (key == InputKey.LeftButton)
             {
                 _clickedTile = null;
+                return;
+            }
+
+            if (key == InputKey.RightButton)
+            {
+                _beamedTiles.Clear();
+                return;
             }
         }
 

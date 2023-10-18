@@ -57,6 +57,7 @@ namespace SBadWater.IO
             }
 
             CheckButtonPress(InputKey.LeftButton, _mouseState?.LeftButton, _oldMouseState?.LeftButton, elapsedTimeMs);
+            CheckButtonPress(InputKey.RightButton, _mouseState?.RightButton, _oldMouseState?.RightButton, elapsedTimeMs);
 
             _oldMouseState = _mouseState;
         }
