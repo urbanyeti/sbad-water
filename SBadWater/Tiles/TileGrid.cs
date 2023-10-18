@@ -166,6 +166,10 @@ namespace SBadWater.Tiles
                         _beamedTiles[_tiles[tileIndex]] = true;
                         _tiles[tileIndex].Capacity = Math.Max(_tiles[tileIndex].Capacity - 100, 0);
                     }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
