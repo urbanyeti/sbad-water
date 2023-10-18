@@ -22,6 +22,7 @@ namespace SBadWater
         private BlendState _multiplyBlend;
         private Texture2D _cursorTexture;
         private Texture2D[] _tileBorderTextures;
+        private Texture2D[] _origTileColorTextures;
         private Texture2D[] _tileColorTextures;
         private KeyboardState _oldKeyboardState;
 
@@ -41,6 +42,7 @@ namespace SBadWater
         {
             _theme = Theme.Classic;
             _tileBorderTextures = new Texture2D[8];
+            _origTileColorTextures = new Texture2D[8];
             _tileColorTextures = new Texture2D[8];
             //_theme = Theme.Retro;
             base.Initialize();
@@ -66,14 +68,14 @@ namespace SBadWater
             _tileBorderTextures[6] = Content.Load<Texture2D>("TileBorderSketch7");
             _tileBorderTextures[7] = Content.Load<Texture2D>("TileBorderSketch8");
 
-            _tileColorTextures[0] = Content.Load<Texture2D>("TileColor1");
-            _tileColorTextures[1] = Content.Load<Texture2D>("TileColor2");
-            _tileColorTextures[2] = Content.Load<Texture2D>("TileColor3");
-            _tileColorTextures[3] = Content.Load<Texture2D>("TileColor4");
-            _tileColorTextures[4] = Content.Load<Texture2D>("TileColor5");
-            _tileColorTextures[5] = Content.Load<Texture2D>("TileColor6");
-            _tileColorTextures[6] = Content.Load<Texture2D>("TileColor7");
-            _tileColorTextures[7] = Content.Load<Texture2D>("TileColor8");
+            _origTileColorTextures[0] = Content.Load<Texture2D>("TileColor1");
+            _origTileColorTextures[1] = Content.Load<Texture2D>("TileColor2");
+            _origTileColorTextures[2] = Content.Load<Texture2D>("TileColor3");
+            _origTileColorTextures[3] = Content.Load<Texture2D>("TileColor4");
+            _origTileColorTextures[4] = Content.Load<Texture2D>("TileColor5");
+            _origTileColorTextures[5] = Content.Load<Texture2D>("TileColor6");
+            _origTileColorTextures[6] = Content.Load<Texture2D>("TileColor7");
+            _origTileColorTextures[7] = Content.Load<Texture2D>("TileColor8");
 
             _renderTarget = new RenderTarget2D(
                 GraphicsDevice,
@@ -222,22 +224,23 @@ namespace SBadWater
                     _backgroundColor = Color.White;
                     IsMouseVisible = true;
 
-                    foreach (Texture2D texture in _tileColorTextures)
+                    for (int i = 0; i < _origTileColorTextures.Length; i++)
                     {
-                        Color[] pixelData = new Color[texture.Width * texture.Height];
-                        texture.GetData(pixelData);
+                        Color[] pixelData = new Color[_origTileColorTextures[i].Width * _origTileColorTextures[i].Height];
+                        _origTileColorTextures[i].GetData(pixelData);
 
-                        for (int i = 0; i < pixelData.Length; i++)
+                        for (int j = 0; j < pixelData.Length; j++)
                         {
                             Color originalColor = pixelData[i];
-                            pixelData[i] = new Color(
+                            pixelData[j] = new Color(
                                 originalColor.R * _tileColor.R / 255,
                                 originalColor.G * _tileColor.G / 255,
                                 originalColor.B * _tileColor.B / 255,
                                 originalColor.A * _tileColor.A / 255 // keep alpha unchanged
                             );
                         }
-                        texture.SetData(pixelData);
+                        _tileColorTextures[i] = new Texture2D(_graphics.GraphicsDevice, _origTileColorTextures[i].Width, _origTileColorTextures[i].Height);
+                        _tileColorTextures[i].SetData(pixelData);
                     }
                     break;
             }
