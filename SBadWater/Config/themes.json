@@ -1,10 +1,39 @@
 [
   {
+    "Name": "Classic",
+    "TextColor": "#FFFFFFFF",
+    "SpriteColor": "#FF6495ED",
+    "BackgroundColor": "#FF008B8B",
+    "IsMouseVisible": true,
+    "TileStyle": "Fixed",
+    "TileBorderTextures": [
+      "Pixel"
+    ],
+    "TileColorTextures": [
+      "Pixel"
+    ]
+  },
+  {
+    "Name": "Retro",
+    "TextColor": "#FF1EFF00",
+    "SpriteColor": "#FF1EFF00",
+    "BackgroundColor": "#FF000000",
+    "IsMouseVisible": false,
+    "TileStyle": "Fixed",
+    "TileBorderTextures": [
+      "Pixel"
+    ],
+    "TileColorTextures": [
+      "Pixel"
+    ]
+  },
+  {
     "Name": "Sketch",
     "TextColor": "#FF483D8B",
     "SpriteColor": "#FF6495E",
     "BackgroundColor": "#FFFFFFFF",
     "IsMouseVisible": true,
+    "TileStyle": "FixedRandom",
     "TileBorderTextures": [
       "TileBorderSketch1",
       "TileBorderSketch2",

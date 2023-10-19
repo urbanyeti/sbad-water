@@ -25,16 +25,10 @@ namespace SBadWater
         private BlendState _subtractiveBlend;
         private BlendState _multiplyBlend;
         private Texture2D _cursorTexture;
-        private Texture2D[] _tileBorderTextures;
-        private Texture2D[] _origTileColorTextures;
-        private Texture2D[] _tileColorTextures;
         private KeyboardState _oldKeyboardState;
 
         private Dictionary<ThemeType,Theme> _themes;
-        private ThemeType _theme;
-        private Color _backgroundColor;
-        private Color _textColor;
-        private Color _tileColor;
+        private ThemeType _currentTheme;
 
         public Demo()
         {
@@ -45,10 +39,7 @@ namespace SBadWater
 
         protected override void Initialize()
         {
-            _theme = ThemeType.Classic;
-            _tileBorderTextures = new Texture2D[8];
-            _origTileColorTextures = new Texture2D[8];
-            _tileColorTextures = new Texture2D[8];
+            _currentTheme = ThemeType.Classic;
             _themes = new Dictionary<ThemeType, Theme>();
             //_theme = Theme.Retro;
             base.Initialize();
@@ -63,25 +54,6 @@ namespace SBadWater
             _scanlines2Texture = Content.Load<Texture2D>("Scanlines2");
             _crtShapeTexture = Content.Load<Texture2D>("CRTShape");
             _cursorTexture = Content.Load<Texture2D>("Cursor");
-
-
-            _tileBorderTextures[0] = Content.Load<Texture2D>("TileBorderSketch1");
-            _tileBorderTextures[1] = Content.Load<Texture2D>("TileBorderSketch2");
-            _tileBorderTextures[2] = Content.Load<Texture2D>("TileBorderSketch3");
-            _tileBorderTextures[3] = Content.Load<Texture2D>("TileBorderSketch4");
-            _tileBorderTextures[4] = Content.Load<Texture2D>("TileBorderSketch5");
-            _tileBorderTextures[5] = Content.Load<Texture2D>("TileBorderSketch6");
-            _tileBorderTextures[6] = Content.Load<Texture2D>("TileBorderSketch7");
-            _tileBorderTextures[7] = Content.Load<Texture2D>("TileBorderSketch8");
-
-            _origTileColorTextures[0] = Content.Load<Texture2D>("TileColor1");
-            _origTileColorTextures[1] = Content.Load<Texture2D>("TileColor2");
-            _origTileColorTextures[2] = Content.Load<Texture2D>("TileColor3");
-            _origTileColorTextures[3] = Content.Load<Texture2D>("TileColor4");
-            _origTileColorTextures[4] = Content.Load<Texture2D>("TileColor5");
-            _origTileColorTextures[5] = Content.Load<Texture2D>("TileColor6");
-            _origTileColorTextures[6] = Content.Load<Texture2D>("TileColor7");
-            _origTileColorTextures[7] = Content.Load<Texture2D>("TileColor8");
 
             _renderTarget = new RenderTarget2D(
                 GraphicsDevice,
@@ -126,10 +98,9 @@ namespace SBadWater
                 }
             }
             
-            SetTheme(_theme);
+            //SetTheme(_theme);
             _font = Content.Load<SpriteFont>("Cascadia");
-
-            _tileGrid = TileGrid.LoadFromConfig(_pixelTexture, _font, _theme);
+            _tileGrid = TileGrid.LoadFromConfig(_font, _themes[_currentTheme]);
         }
 
         protected override void Update(GameTime gameTime)
@@ -153,23 +124,23 @@ namespace SBadWater
 
         protected override void Draw(GameTime gameTime)
         {
-            switch (_theme)
+            switch (_currentTheme)
             {
                 case ThemeType.Classic:
-                    DrawClassic(gameTime);
+                    DrawSimple(gameTime);
                     break;
                 case ThemeType.Retro:
                     DrawRetro(gameTime);
                     break;
                 case ThemeType.Sketch:
-                    DrawClassic(gameTime);
+                    DrawSimple(gameTime);
                     break;
             }
 
             base.Draw(gameTime);
         }
 
-        private void DrawClassic(GameTime gameTime)
+        private void DrawSimple(GameTime gameTime)
         {
             _graphics.GraphicsDevice.SetRenderTarget(_renderTarget);
             _graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -179,7 +150,7 @@ namespace SBadWater
             _spriteBatch.End();
 
             _graphics.GraphicsDevice.SetRenderTarget(null);
-            _graphics.GraphicsDevice.Clear(_backgroundColor);
+            _graphics.GraphicsDevice.Clear(_themes[_currentTheme].BackgroundColor);
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
@@ -207,7 +178,7 @@ namespace SBadWater
             _spriteBatch.End();
 
             _graphics.GraphicsDevice.SetRenderTarget(null);
-            _graphics.GraphicsDevice.Clear(_backgroundColor); // or any desired clear color
+            _graphics.GraphicsDevice.Clear(_themes[_currentTheme].BackgroundColor); // or any desired clear color
 
             _spriteBatch.Begin();
             _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
@@ -216,82 +187,10 @@ namespace SBadWater
 
         private void ToggleTheme()
         {
-            ThemeType theme = (ThemeType)(((int)_theme + 1) % Enum.GetValues(typeof(ThemeType)).Length);
-            SetTheme(theme);
-            SetGridTheme(theme);
-        }
-
-        private void SetTheme(ThemeType theme)
-        {
-            _theme = theme;
-            switch (_theme)
-            {
-                case ThemeType.Classic:
-                    _textColor = Color.White;
-                    _tileColor = Color.CornflowerBlue;
-                    _backgroundColor = Color.DarkCyan;
-                    IsMouseVisible = true;
-                    break;
-                case ThemeType.Retro:
-                    string hex = "#1EFF00";
-                    System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
-                    Color xnaColor = new(color.R, color.G, color.B);
-                    _textColor = xnaColor;
-                    _tileColor = xnaColor;
-                    _backgroundColor = Color.Black;
-                    IsMouseVisible = false;
-                    break;
-                case ThemeType.Sketch:
-                    _textColor = Color.DarkSlateBlue;
-                    _tileColor = Color.CornflowerBlue;
-                    _backgroundColor = Color.White;
-                    IsMouseVisible = true;
-
-                    for (int i = 0; i < _origTileColorTextures.Length; i++)
-                    {
-                        Color[] pixelData = new Color[_origTileColorTextures[i].Width * _origTileColorTextures[i].Height];
-                        _origTileColorTextures[i].GetData(pixelData);
-
-                        for (int j = 0; j < pixelData.Length; j++)
-                        {
-                            Color originalColor = pixelData[i];
-                            pixelData[j] = new Color(
-                                originalColor.R * _tileColor.R / 255,
-                                originalColor.G * _tileColor.G / 255,
-                                originalColor.B * _tileColor.B / 255,
-                                originalColor.A * _tileColor.A / 255 // keep alpha unchanged
-                            );
-                        }
-                        _tileColorTextures[i] = new Texture2D(_graphics.GraphicsDevice, _origTileColorTextures[i].Width, _origTileColorTextures[i].Height);
-                        _tileColorTextures[i].SetData(pixelData);
-                    }
-                    break;
-            }
-            _pixelTexture.SetData(new Color[] { _tileColor });
-
-
-        }
-
-        private void SetGridTheme(ThemeType theme)
-        {
-            _tileGrid.Theme = _theme;
-
-            switch (_theme)
-            {
-                case ThemeType.Classic:
-                    _tileGrid.TileBorderTextures = null;
-                    _tileGrid.TileColorTextures = null;
-                    break;
-                case ThemeType.Retro:
-                    _tileGrid.TileBorderTextures = null;
-                    _tileGrid.TileColorTextures = null;
-                    break;
-                case ThemeType.Sketch:
-                    _tileGrid.TileBorderTextures = _tileBorderTextures;
-                    _tileGrid.TileColorTextures = _tileColorTextures;
-                    break;
-            }
-
+            _currentTheme = (ThemeType)(((int)_currentTheme + 1) % Enum.GetValues(typeof(ThemeType)).Length);
+            Theme theme = _themes[_currentTheme];
+            _tileGrid.SetTheme(theme);
+            IsMouseVisible = theme.IsMouseVisible;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using SBadWater.UI;
 using System;
 
 namespace SBadWater.Tiles
@@ -21,6 +23,8 @@ namespace SBadWater.Tiles
                 color = new Color(color, capacity);
             }
         }
+        public Texture2D ColorTexture { get; set; }
+        public Texture2D BorderTexture { get; set; }
 
         public bool Passable { get; set; }
         public int X { get; set; }
@@ -35,7 +39,7 @@ namespace SBadWater.Tiles
         private int capacity;
         private Color color;
 
-        public LiquidTile(Rectangle rectangle, Color color, int capacity, int x, int y, int index, bool passable)
+        public LiquidTile(Rectangle rectangle, int capacity, int x, int y, int index, bool passable, Color color, Theme theme, Random random = null)
         {
             Rectangle = rectangle;
             Color = color;
@@ -44,6 +48,8 @@ namespace SBadWater.Tiles
             Y = y;
             Index = index;
             Passable = passable;
+
+            ApplyTheme(theme, random);
         }
 
         public LiquidTile AddNeighbor(LiquidTile neighbor, TileDirection direction)
@@ -53,7 +59,6 @@ namespace SBadWater.Tiles
             neighbor.Neighbors[(int)direction.GetOpposite()] = this;
             return this;
         }
-
 
         public void UpdateFlow()
         {
@@ -106,6 +111,22 @@ namespace SBadWater.Tiles
                 int split = Math.DivRem(sum, 2, out int rem);
                 Capacity = split + rem;
                 Right.Capacity = split;
+            }
+        }
+
+        public void ApplyTheme(Theme theme, Random random = null)
+        {
+            random ??= new Random();
+            switch (theme.TileStyle)
+            {
+                case TileStyle.Fixed:
+                    BorderTexture = theme.TileBorderTextures[0];
+                    ColorTexture = theme.TileColorTextures[0];
+                    break;
+                case TileStyle.FixedRandom:
+                    BorderTexture = theme.TileBorderTextures[random.Next(theme.TileBorderTextures.Length)];
+                    ColorTexture = theme.TileColorTextures[random.Next(theme.TileColorTextures.Length)];
+                    break;
             }
         }
     }

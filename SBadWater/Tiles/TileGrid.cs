@@ -18,93 +18,98 @@ namespace SBadWater.Tiles
         public int Columns => _config.Columns;
         public int Rows => _config.Rows;
         public bool[] PassableTiles => _config.PassableTiles;
-        public Texture2D[] TileBorderTextures
-        {
-            get { return _tileBorderTextures; }
-            set
-            {
-                _tileBorderTextures = value;
-                if (_tileBorderTextures == null)
-                {
-                    _tileBorderIndex = null;
-                    return;
-                }
+        public Color TextColor => _theme.TextColor;
+        public Texture2D[] TileBorderTextures => _theme.TileBorderTextures;
+        //{
+        //    get { return _tileBorderTextures; }
+        //    set
+        //    {
+        //        _tileBorderTextures = value;
+        //        if (_tileBorderTextures == null)
+        //        {
+        //            _tileBorderIndex = null;
+        //            return;
+        //        }
 
-                _tileBorderIndex = new int[_tiles.Length];
-                Random random = new();
-                for (int i= 0; i < _tiles.Length; i++)
-                {
-                    _tileBorderIndex[i] = random.Next(_tileBorderTextures.Length);
-                }
-            }
-        }
+        //        _tileBorderIndex = new int[_tiles.Length];
+        //        Random random = new();
+        //        for (int i= 0; i < _tiles.Length; i++)
+        //        {
+        //            _tileBorderIndex[i] = random.Next(_tileBorderTextures.Length);
+        //        }
+        //    }
+        //}
 
-        public Texture2D[] TileColorTextures
-        {
-            get { return _tileColorTextures; }
-            set
-            {
-                _tileColorTextures = value;
-                if (_tileColorTextures == null)
-                {
-                    _tileColorTextures = null;
-                    return;
-                }
+        public Texture2D[] TileColorTextures => _theme.TileColorTextures;
+        //{
+        //    get { return _tileColorTextures; }
+        //    set
+        //    {
+        //        _tileColorTextures = value;
+        //        if (_tileColorTextures == null)
+        //        {
+        //            _tileColorTextures = null;
+        //            return;
+        //        }
 
-                _tileColorIndex = new int[_tiles.Length];
-                Random random = new();
-                for (int i = 0; i < _tiles.Length; i++)
-                {
-                    _tileColorIndex[i] = random.Next(_tileColorTextures.Length);
-                }
-            }
-        }
+        //        _tileColorIndex = new int[_tiles.Length];
+        //        Random random = new();
+        //        for (int i = 0; i < _tiles.Length; i++)
+        //        {
+        //            _tileColorIndex[i] = random.Next(_tileColorTextures.Length);
+        //        }
+        //    }
+        //}
 
-        public ThemeType Theme
-        {
-            get { return _theme; }
-            set
-            {
-                _theme = value;
-                switch (_theme)
-                {
-                    case ThemeType.Classic:
-                        _textColor = Color.White;
-                        break;
-                    case ThemeType.Retro:
-                        string hex = "#1EFF00";
-                        System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
-                        _textColor = new(color.R, color.G, color.B);
-                        break;
-                    case ThemeType.Sketch:
-                        _textColor = Color.DarkSlateBlue;
-                        break;
-                }
-            }
-        }
+        //public ThemeType Theme
+        //{
+        //    get { return _theme; }
+        //    set
+        //    {
+        //        _theme = value;
+        //        switch (_theme)
+        //        {
+        //            case ThemeType.Classic:
+        //                _textColor = Color.White;
+        //                break;
+        //            case ThemeType.Retro:
+        //                string hex = "#1EFF00";
+        //                System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
+        //                _textColor = new(color.R, color.G, color.B);
+        //                break;
+        //            case ThemeType.Sketch:
+        //                _textColor = Color.DarkSlateBlue;
+        //                break;
+        //        }
+        //    }
+        //}
 
         private readonly TileGridConfig _config;
 
         private readonly LiquidTile[] _tiles;
         private readonly InputManager _inputManager;
-        private readonly Texture2D _texture;
-
+        private readonly Random _random = new();
         private readonly SpriteFont _font;
         private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
         private LiquidTile _hoveredTile;
         private LiquidTile _clickedTile;
-        private ThemeType _theme;
-        private Color _textColor;
-        private Texture2D[] _tileBorderTextures;
-        private int[] _tileBorderIndex;
-        private Texture2D[] _tileColorTextures;
-        private int[] _tileColorIndex;
+        private Theme _theme;
 
 
-        public TileGrid(TileGridConfig config, Texture2D texture, SpriteFont font, ThemeType theme = ThemeType.Classic)
+        public void SetTheme(Theme theme)
+        {
+            _theme = theme;
+
+            foreach (LiquidTile tile in _tiles)
+            {
+                tile.ApplyTheme(_theme, _random);
+            }
+        }
+
+        public TileGrid(TileGridConfig config, Theme theme, SpriteFont font)
         {
             _config = config;
-            _texture = texture;
+            _theme = theme;
             _font = font;
             _tiles = new LiquidTile[Rows * Columns];
             _inputManager = new InputManager();
@@ -112,8 +117,13 @@ namespace SBadWater.Tiles
             _inputManager.OnButtonReleased += ButtonReleased;
             _inputManager.OnMouseMoved += MouseMoved;
 
-            Theme = theme;
+            CreateTiles();
+        }
 
+
+
+        private void CreateTiles()
+        {
             for (int row = 0; row < Rows; row++)
             {
                 for (int col = 0; col < Columns; col++)
@@ -122,7 +132,7 @@ namespace SBadWater.Tiles
                     int x = (col * 10) + 120;
                     int y = (row * 10) + 40;
 
-                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 10, 10), Color.White, 0, col, row, index, PassableTiles[index]);
+                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 10, 10), 0, col, row, index, PassableTiles[index], Color.White, _theme, random: _random);
 
                     if (col > 0)
                     {
@@ -156,13 +166,7 @@ namespace SBadWater.Tiles
                 LiquidTile tile = _tiles[i];
                 if (tile == null) { continue; }
 
-                if (_tileColorTextures == null)
-                {
-                    spriteBatch.Draw(_texture, _tiles[i].Rectangle, tile.Color);
-                } else
-                {
-                    spriteBatch.Draw(_tileColorTextures[_tileColorIndex[i]], _tiles[i].Rectangle, tile.Color);
-                }
+                spriteBatch.Draw(tile.ColorTexture, tile.Rectangle, tile.Color);
 
                 if (tile == _clickedTile)
                 {
@@ -188,11 +192,11 @@ namespace SBadWater.Tiles
             }
         }
 
-        public static TileGrid LoadFromConfig(Texture2D texture, SpriteFont font, ThemeType theme, string path = "config//default_tiles.json")
+        public static TileGrid LoadFromConfig(SpriteFont font, Theme theme, string path = "config//default_tiles.json")
         {
             string json = File.ReadAllText(path);
             TileGridConfig config = JsonConvert.DeserializeObject<TileGridConfig>(json);
-            return new TileGrid(config, texture, font, theme);
+            return new TileGrid(config, theme, font);
         }
 
         private void MouseMoved(MouseState mouseState, MouseState oldMouseState)
@@ -278,29 +282,22 @@ namespace SBadWater.Tiles
         }
 
         // Utility method to draw a border around a rectangle.
-        private void DrawBorder(SpriteBatch spriteBatch, LiquidTile tile, int thicknessOfBorder, Color borderColor)
+        private static void DrawBorder(SpriteBatch spriteBatch, LiquidTile tile, int thicknessOfBorder, Color borderColor)
         {
             Rectangle rectangleToDraw = tile.Rectangle;
-            if (TileBorderTextures == null)
-            {
-                // Draw top line
-                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+            // Draw top line
+            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
 
-                // Draw left line
-                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
+            // Draw left line
+            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
 
-                // Draw right line
-                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
-                                                      rectangleToDraw.Y,
-                                                      thicknessOfBorder,
-                                                      rectangleToDraw.Height), borderColor);
-
-                // Draw bottom line
-                spriteBatch.Draw(_texture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), borderColor);
-                return;
-            }
-            spriteBatch.Draw(TileBorderTextures[_tileBorderIndex[tile.Index]], rectangleToDraw, borderColor);
-
+            // Draw right line
+            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
+                                                  rectangleToDraw.Y,
+                                                  thicknessOfBorder,
+                                                  rectangleToDraw.Height), borderColor);
+            // Draw bottom line
+            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), borderColor);
         }
 
         private void DrawTileInfo(SpriteBatch spriteBatch)
@@ -309,19 +306,19 @@ namespace SBadWater.Tiles
             int infoY = 140 /*some y-coordinate on the side*/;
             int spacing = 30;  // Spacing between lines of text.
 
-            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), _textColor);
+            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), _textColor);
+            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), _textColor);
+            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), _textColor);
+            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), _textColor);
+            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), _theme.TextColor);
         }
     }
 
