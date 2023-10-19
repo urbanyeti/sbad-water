@@ -119,10 +119,10 @@ namespace SBadWater.Tiles
                 for (int col = 0; col < Columns; col++)
                 {
                     int index = (row * Columns) + col;
-                    int x = (col * 20) + 120;
-                    int y = (row * 20) + 40;
+                    int x = (col * 10) + 120;
+                    int y = (row * 10) + 40;
 
-                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 20, 20), Color.White, 0, col, row, index, PassableTiles[index]);
+                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 10, 10), Color.White, 0, col, row, index, PassableTiles[index]);
 
                     if (col > 0)
                     {
