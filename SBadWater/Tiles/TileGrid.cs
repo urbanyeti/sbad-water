@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using SBadWater.IO;
+using SBadWater.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -59,7 +60,7 @@ namespace SBadWater.Tiles
             }
         }
 
-        public Theme Theme
+        public ThemeType Theme
         {
             get { return _theme; }
             set
@@ -67,15 +68,15 @@ namespace SBadWater.Tiles
                 _theme = value;
                 switch (_theme)
                 {
-                    case Theme.Classic:
+                    case ThemeType.Classic:
                         _textColor = Color.White;
                         break;
-                    case Theme.Retro:
+                    case ThemeType.Retro:
                         string hex = "#1EFF00";
                         System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
                         _textColor = new(color.R, color.G, color.B);
                         break;
-                    case Theme.Sketch:
+                    case ThemeType.Sketch:
                         _textColor = Color.DarkSlateBlue;
                         break;
                 }
@@ -92,7 +93,7 @@ namespace SBadWater.Tiles
         private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
         private LiquidTile _hoveredTile;
         private LiquidTile _clickedTile;
-        private Theme _theme;
+        private ThemeType _theme;
         private Color _textColor;
         private Texture2D[] _tileBorderTextures;
         private int[] _tileBorderIndex;
@@ -100,7 +101,7 @@ namespace SBadWater.Tiles
         private int[] _tileColorIndex;
 
 
-        public TileGrid(TileGridConfig config, Texture2D texture, SpriteFont font, Theme theme = Theme.Classic)
+        public TileGrid(TileGridConfig config, Texture2D texture, SpriteFont font, ThemeType theme = ThemeType.Classic)
         {
             _config = config;
             _texture = texture;
@@ -187,7 +188,7 @@ namespace SBadWater.Tiles
             }
         }
 
-        public static TileGrid LoadFromConfig(Texture2D texture, SpriteFont font, Theme theme, string path = "config//default_tiles.json")
+        public static TileGrid LoadFromConfig(Texture2D texture, SpriteFont font, ThemeType theme, string path = "config//default_tiles.json")
         {
             string json = File.ReadAllText(path);
             TileGridConfig config = JsonConvert.DeserializeObject<TileGridConfig>(json);

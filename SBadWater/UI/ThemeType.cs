@@ -1,6 +1,6 @@
-﻿namespace SBadWater
+﻿namespace SBadWater.UI
 {
-    public enum Theme
+    public enum ThemeType
     {
         Classic,
         Retro,

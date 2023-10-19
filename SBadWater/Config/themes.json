@@ -1,0 +1,29 @@
+[
+  {
+    "Name": "Sketch",
+    "TextColor": "#FF483D8B",
+    "SpriteColor": "#FF6495E",
+    "BackgroundColor": "#FFFFFFFF",
+    "IsMouseVisible": true,
+    "TileBorderTextures": [
+      "TileBorderSketch1",
+      "TileBorderSketch2",
+      "TileBorderSketch3",
+      "TileBorderSketch4",
+      "TileBorderSketch5",
+      "TileBorderSketch6",
+      "TileBorderSketch7",
+      "TileBorderSketch8"
+    ],
+    "TileColorTextures": [
+      "TileColor1",
+      "TileColor2",
+      "TileColor3",
+      "TileColor4",
+      "TileColor5",
+      "TileColor6",
+      "TileColor7",
+      "TileColor8"
+    ]
+  }
+]

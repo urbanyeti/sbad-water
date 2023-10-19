@@ -1,8 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json;
 using SBadWater.Tiles;
+using SBadWater.UI;
 using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SBadWater
 {
@@ -26,7 +30,8 @@ namespace SBadWater
         private Texture2D[] _tileColorTextures;
         private KeyboardState _oldKeyboardState;
 
-        private Theme _theme;
+        private Dictionary<ThemeType,Theme> _themes;
+        private ThemeType _theme;
         private Color _backgroundColor;
         private Color _textColor;
         private Color _tileColor;
@@ -40,10 +45,11 @@ namespace SBadWater
 
         protected override void Initialize()
         {
-            _theme = Theme.Classic;
+            _theme = ThemeType.Classic;
             _tileBorderTextures = new Texture2D[8];
             _origTileColorTextures = new Texture2D[8];
             _tileColorTextures = new Texture2D[8];
+            _themes = new Dictionary<ThemeType, Theme>();
             //_theme = Theme.Retro;
             base.Initialize();
         }
@@ -103,6 +109,23 @@ namespace SBadWater
             };
 
 
+
+            string themesJson = File.ReadAllText("Config//themes.json");  // Load the JSON content from a file.
+            ThemeFactory themeFactory = new ThemeFactory(Content);  // Assuming `Content` is your game's content manager.
+            var themesDTOs = JsonConvert.DeserializeObject<ThemeDTO[]>(themesJson);
+            foreach (var themeDTO in themesDTOs)
+            {
+                Theme theme = themeFactory.CreateThemeFromDTO(themeDTO);
+                foreach(ThemeType themeType in Enum.GetValues<ThemeType>())
+                {
+                    if(themeType.ToString() == theme.Name)
+                    {
+                        _themes[themeType] = theme;
+                        continue;
+                    }
+                }
+            }
+            
             SetTheme(_theme);
             _font = Content.Load<SpriteFont>("Cascadia");
 
@@ -132,13 +155,13 @@ namespace SBadWater
         {
             switch (_theme)
             {
-                case Theme.Classic:
+                case ThemeType.Classic:
                     DrawClassic(gameTime);
                     break;
-                case Theme.Retro:
+                case ThemeType.Retro:
                     DrawRetro(gameTime);
                     break;
-                case Theme.Sketch:
+                case ThemeType.Sketch:
                     DrawClassic(gameTime);
                     break;
             }
@@ -193,23 +216,23 @@ namespace SBadWater
 
         private void ToggleTheme()
         {
-            Theme theme = (Theme)(((int)_theme + 1) % Enum.GetValues(typeof(Theme)).Length);
+            ThemeType theme = (ThemeType)(((int)_theme + 1) % Enum.GetValues(typeof(ThemeType)).Length);
             SetTheme(theme);
             SetGridTheme(theme);
         }
 
-        private void SetTheme(Theme theme)
+        private void SetTheme(ThemeType theme)
         {
             _theme = theme;
             switch (_theme)
             {
-                case Theme.Classic:
+                case ThemeType.Classic:
                     _textColor = Color.White;
                     _tileColor = Color.CornflowerBlue;
                     _backgroundColor = Color.DarkCyan;
                     IsMouseVisible = true;
                     break;
-                case Theme.Retro:
+                case ThemeType.Retro:
                     string hex = "#1EFF00";
                     System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
                     Color xnaColor = new(color.R, color.G, color.B);
@@ -218,7 +241,7 @@ namespace SBadWater
                     _backgroundColor = Color.Black;
                     IsMouseVisible = false;
                     break;
-                case Theme.Sketch:
+                case ThemeType.Sketch:
                     _textColor = Color.DarkSlateBlue;
                     _tileColor = Color.CornflowerBlue;
                     _backgroundColor = Color.White;
@@ -249,21 +272,21 @@ namespace SBadWater
 
         }
 
-        private void SetGridTheme(Theme theme)
+        private void SetGridTheme(ThemeType theme)
         {
             _tileGrid.Theme = _theme;
 
             switch (_theme)
             {
-                case Theme.Classic:
+                case ThemeType.Classic:
                     _tileGrid.TileBorderTextures = null;
                     _tileGrid.TileColorTextures = null;
                     break;
-                case Theme.Retro:
+                case ThemeType.Retro:
                     _tileGrid.TileBorderTextures = null;
                     _tileGrid.TileColorTextures = null;
                     break;
-                case Theme.Sketch:
+                case ThemeType.Sketch:
                     _tileGrid.TileBorderTextures = _tileBorderTextures;
                     _tileGrid.TileColorTextures = _tileColorTextures;
                     break;
