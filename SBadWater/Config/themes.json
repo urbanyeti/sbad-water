@@ -3,6 +3,7 @@
     "Name": "Classic",
     "TextColor": "#FFFFFFFF",
     "SpriteColor": "#FF6495ED",
+    "BlockColor": "#FF808080",  
     "BackgroundColor": "#FF008B8B",
     "IsMouseVisible": true,
     "TileStyle": "Fixed",
@@ -17,6 +18,7 @@
     "Name": "Retro",
     "TextColor": "#FF1EFF00",
     "SpriteColor": "#FF1EFF00",
+    "BlockColor": "#FF006400",
     "BackgroundColor": "#FF000000",
     "IsMouseVisible": false,
     "TileStyle": "Fixed",
@@ -30,8 +32,9 @@
   {
     "Name": "Sketch",
     "TextColor": "#FF483D8B",
-    "SpriteColor": "#FF6495E",
-    "BackgroundColor": "#FFFFFFFF",
+    "SpriteColor": "#FF6495ED",
+    "BlockColor": "#FF483D8B",
+    "BackgroundColor": "#FFB0C4DE",
     "IsMouseVisible": true,
     "TileStyle": "FixedRandom",
     "TileBorderTextures": [

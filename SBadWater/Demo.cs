@@ -15,7 +15,6 @@ namespace SBadWater
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private TileGrid _tileGrid;
-        private Texture2D _pixelTexture;
         private Texture2D _backgroundTexture;
         private Texture2D _scanlines1Texture;
         private Texture2D _scanlines2Texture;
@@ -39,7 +38,7 @@ namespace SBadWater
 
         protected override void Initialize()
         {
-            _currentTheme = ThemeType.Classic;
+            _currentTheme = ThemeType.Retro;
             _themes = new Dictionary<ThemeType, Theme>();
             //_theme = Theme.Retro;
             base.Initialize();
@@ -48,7 +47,6 @@ namespace SBadWater
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_graphics.GraphicsDevice);
-            _pixelTexture = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             _backgroundTexture = Content.Load<Texture2D>("ScanlinesBack");
             _scanlines1Texture = Content.Load<Texture2D>("Scanlines1");
             _scanlines2Texture = Content.Load<Texture2D>("Scanlines2");

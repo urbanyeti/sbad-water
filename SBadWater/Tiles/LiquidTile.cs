@@ -10,19 +10,9 @@ namespace SBadWater.Tiles
         public Rectangle Rectangle { get; set; }
         public Color Color
         {
-            get => Passable ? color : Color.Gray;
-            set => color = new Color(value, capacity);
-
+            get => Passable ? new Color(_color, Capacity) : _blockColor;
         }
-        public int Capacity
-        {
-            get => capacity;
-            set
-            {
-                capacity = value;
-                color = new Color(color, capacity);
-            }
-        }
+        public int Capacity { get; set; }
         public Texture2D ColorTexture { get; set; }
         public Texture2D BorderTexture { get; set; }
 
@@ -36,13 +26,12 @@ namespace SBadWater.Tiles
         public LiquidTile Left => Neighbors[(int)TileDirection.LEFT];
         public LiquidTile Top => Neighbors[(int)TileDirection.TOP];
 
-        private int capacity;
-        private Color color;
+        private Color _color;
+        private Color _blockColor;
 
-        public LiquidTile(Rectangle rectangle, int capacity, int x, int y, int index, bool passable, Color color, Theme theme, Random random = null)
+        public LiquidTile(Rectangle rectangle, int capacity, int x, int y, int index, bool passable, Theme theme, Random random = null)
         {
             Rectangle = rectangle;
-            Color = color;
             Capacity = capacity;
             X = x;
             Y = y;
@@ -117,6 +106,10 @@ namespace SBadWater.Tiles
         public void ApplyTheme(Theme theme, Random random = null)
         {
             random ??= new Random();
+
+            _color = theme.SpriteColor;
+            _blockColor = theme.BlockColor;
+
             switch (theme.TileStyle)
             {
                 case TileStyle.Fixed:

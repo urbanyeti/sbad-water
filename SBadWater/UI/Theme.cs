@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace SBadWater.UI
 {
@@ -9,6 +8,7 @@ namespace SBadWater.UI
         public string Name { get; set; }
         public Color TextColor { get; set; }
         public Color SpriteColor { get; set; }
+        public Color BlockColor { get; set; }
         public Color BackgroundColor { get; set; }
         public bool IsMouseVisible { get; set; }
         public TileStyle TileStyle { get; set; }

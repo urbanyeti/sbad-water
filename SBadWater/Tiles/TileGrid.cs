@@ -132,7 +132,7 @@ namespace SBadWater.Tiles
                     int x = (col * 10) + 120;
                     int y = (row * 10) + 40;
 
-                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 10, 10), 0, col, row, index, PassableTiles[index], Color.White, _theme, random: _random);
+                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 10, 10), 0, col, row, index, PassableTiles[index], _theme, random: _random);
 
                     if (col > 0)
                     {

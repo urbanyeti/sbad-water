@@ -26,6 +26,7 @@ namespace SBadWater.UI
                 Name = themeDTO.Name,
                 TextColor = ParseColor(themeDTO.TextColor),
                 SpriteColor = ParseColor(themeDTO.SpriteColor),
+                BlockColor = ParseColor(themeDTO.BlockColor),
                 BackgroundColor = ParseColor(themeDTO.BackgroundColor),
                 IsMouseVisible = themeDTO.IsMouseVisible,
                 TileStyle = Enum.Parse<TileStyle>(themeDTO.TileStyle),
