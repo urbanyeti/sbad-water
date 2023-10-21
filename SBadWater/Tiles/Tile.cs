@@ -5,7 +5,7 @@ using System;
 
 namespace SBadWater.Tiles
 {
-    public class LiquidTile
+    public class Tile
     {
         public Rectangle Rectangle { get; set; }
         public Color Color => Passable ? new Color(_color, Capacity) : _blockColor;
@@ -17,16 +17,16 @@ namespace SBadWater.Tiles
         public int X { get; set; }
         public int Y { get; set; }
         public int Index { get; set; }
-        public LiquidTile[] Neighbors { get; set; } = new LiquidTile[4];
-        public LiquidTile Right => Neighbors[(int)TileDirection.RIGHT];
-        public LiquidTile Bottom => Neighbors[(int)TileDirection.BOTTOM];
-        public LiquidTile Left => Neighbors[(int)TileDirection.LEFT];
-        public LiquidTile Top => Neighbors[(int)TileDirection.TOP];
+        public Tile[] Neighbors { get; set; } = new Tile[4];
+        public Tile Right => Neighbors[(int)TileDirection.RIGHT];
+        public Tile Bottom => Neighbors[(int)TileDirection.BOTTOM];
+        public Tile Left => Neighbors[(int)TileDirection.LEFT];
+        public Tile Top => Neighbors[(int)TileDirection.TOP];
 
         private Color _color;
         private Color _blockColor;
 
-        public LiquidTile(Rectangle rectangle, int capacity, int x, int y, int index, bool passable, Theme theme, Random random = null)
+        public Tile(Rectangle rectangle, int capacity, int x, int y, int index, bool passable, Theme theme, Random random = null)
         {
             Rectangle = rectangle;
             Capacity = capacity;
@@ -38,11 +38,11 @@ namespace SBadWater.Tiles
             ApplyTheme(theme, random);
         }
 
-        public LiquidTile AddNeighbor(LiquidTile neighbor, TileDirection direction)
+        public Tile AddNeighbor(Tile neighbor, TileDirection direction)
         {
             if (neighbor == null) { return this; }
             Neighbors[(int)direction] = neighbor;
-            neighbor.Neighbors[(int)direction.GetOpposite()] = this;
+            neighbor.Neighbors[(int)GetInverseDirection(direction)] = this;
             return this;
         }
 
@@ -118,6 +118,13 @@ namespace SBadWater.Tiles
                     ColorTexture = theme.TileColorTextures[random.Next(theme.TileColorTextures.Length)];
                     break;
             }
+        }
+
+        public static TileDirection GetInverseDirection(TileDirection tileDirection)
+        {
+            TileDirection[] array = Enum.GetValues<TileDirection>();
+            int dir = ((int)tileDirection + 2) % array.Length;
+            return array[dir];
         }
     }
 }

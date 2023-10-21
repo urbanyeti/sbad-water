@@ -20,15 +20,15 @@ namespace SBadWater.Tiles
         public Color TextColor => _theme.TextColor;
         public Texture2D[] TileBorderTextures => _theme.TileBorderTextures;
         public Texture2D[] TileColorTextures => _theme.TileColorTextures;
-        private readonly TileGridConfig _config;
+        private readonly TileGridDTO _config;
 
-        private readonly LiquidTile[] _tiles;
+        private readonly Tile[] _tiles;
         private readonly InputManager _inputManager;
         private readonly Random _random = new();
         private readonly SpriteFont _font;
-        private readonly Dictionary<LiquidTile, bool> _beamedTiles = new();
-        private LiquidTile _hoveredTile;
-        private LiquidTile _clickedTile;
+        private readonly Dictionary<Tile, bool> _beamedTiles = new();
+        private Tile _hoveredTile;
+        private Tile _clickedTile;
         private Theme _theme;
         private TileBuildMode _buildMode;
 
@@ -37,18 +37,18 @@ namespace SBadWater.Tiles
         {
             _theme = theme;
 
-            foreach (LiquidTile tile in _tiles)
+            foreach (Tile tile in _tiles)
             {
                 tile.ApplyTheme(_theme, _random);
             }
         }
 
-        public TileGrid(TileGridConfig config, Theme theme, SpriteFont font)
+        public TileGrid(TileGridDTO config, Theme theme, SpriteFont font)
         {
             _config = config;
             _theme = theme;
             _font = font;
-            _tiles = new LiquidTile[Rows * Columns];
+            _tiles = new Tile[Rows * Columns];
             _inputManager = new InputManager();
             _inputManager.OnButtonPressed += ButtonPressed;
             _inputManager.OnButtonReleased += ButtonReleased;
@@ -67,7 +67,7 @@ namespace SBadWater.Tiles
                     int x = (col * 10) + 120;
                     int y = (row * 10) + 40;
 
-                    _tiles[index] = new LiquidTile(new Rectangle(x, y, 10, 10), 0, col, row, index, PassableTiles[index], _theme, random: _random);
+                    _tiles[index] = new Tile(new Rectangle(x, y, 10, 10), 0, col, row, index, PassableTiles[index], _theme, random: _random);
 
                     if (col > 0)
                     {
@@ -98,7 +98,7 @@ namespace SBadWater.Tiles
         {
             for (int i = 0; i < _tiles.Length; i++)
             {
-                LiquidTile tile = _tiles[i];
+                Tile tile = _tiles[i];
                 if (tile == null) { continue; }
 
                 spriteBatch.Draw(tile.ColorTexture, tile.Rectangle, tile.Color);
@@ -130,16 +130,16 @@ namespace SBadWater.Tiles
         public static TileGrid LoadFromConfig(SpriteFont font, Theme theme, string path = "config//default_tiles.json")
         {
             string json = File.ReadAllText(path);
-            TileGridConfig config = JsonConvert.DeserializeObject<TileGridConfig>(json);
+            TileGridDTO config = JsonConvert.DeserializeObject<TileGridDTO>(json);
             return new TileGrid(config, theme, font);
         }
 
         private void MouseMoved(MouseState mouseState, MouseState oldMouseState)
         {
-            LiquidTile oldHoverTile = _hoveredTile;
+            Tile oldHoverTile = _hoveredTile;
             _hoveredTile = null;
 
-            foreach (LiquidTile tile in _tiles)
+            foreach (Tile tile in _tiles)
             {
                 if (tile == null) { continue; }
                 if (tile.Rectangle.Contains(mouseState.Position))
@@ -248,7 +248,7 @@ namespace SBadWater.Tiles
         }
 
         // Utility method to draw a border around a rectangle.
-        private void DrawBorder(SpriteBatch spriteBatch, LiquidTile tile, int thicknessOfBorder, Color borderColor)
+        private void DrawBorder(SpriteBatch spriteBatch, Tile tile, int thicknessOfBorder, Color borderColor)
         {
             Rectangle rectangleToDraw = tile.Rectangle;
             switch (_theme.BorderStyle)

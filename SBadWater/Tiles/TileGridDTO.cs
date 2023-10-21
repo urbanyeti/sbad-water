@@ -1,6 +1,6 @@
 ﻿namespace SBadWater.Tiles
 {
-    public class TileGridConfig
+    public class TileGridDTO
     {
         public string Version { get; set; }
         public int Columns { get; set; }
