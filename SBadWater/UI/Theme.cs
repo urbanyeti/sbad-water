@@ -12,6 +12,7 @@ namespace SBadWater.UI
         public Color BackgroundColor { get; set; }
         public bool IsMouseVisible { get; set; }
         public TileStyle TileStyle { get; set; }
+        public BorderStyle BorderStyle { get; set; }
         public Texture2D[] TileBorderTextures { get; set; }
         public Texture2D[] TileColorTextures { get; set; }
     }

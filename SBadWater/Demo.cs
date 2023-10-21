@@ -38,7 +38,7 @@ namespace SBadWater
 
         protected override void Initialize()
         {
-            _currentTheme = ThemeType.Retro;
+            _currentTheme = ThemeType.Sketch;
             _themes = new Dictionary<ThemeType, Theme>();
             //_theme = Theme.Retro;
             base.Initialize();
@@ -98,7 +98,7 @@ namespace SBadWater
             
             //SetTheme(_theme);
             _font = Content.Load<SpriteFont>("Cascadia");
-            _tileGrid = TileGrid.LoadFromConfig(_font, _themes[_currentTheme]);
+            _tileGrid = TileGrid.LoadFromConfig(_font, _themes[_currentTheme], "config//default_tiles.json");
         }
 
         protected override void Update(GameTime gameTime)

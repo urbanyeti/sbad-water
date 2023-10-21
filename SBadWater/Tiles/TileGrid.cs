@@ -282,23 +282,34 @@ namespace SBadWater.Tiles
         }
 
         // Utility method to draw a border around a rectangle.
-        private static void DrawBorder(SpriteBatch spriteBatch, LiquidTile tile, int thicknessOfBorder, Color borderColor)
+        private void DrawBorder(SpriteBatch spriteBatch, LiquidTile tile, int thicknessOfBorder, Color borderColor)
         {
             Rectangle rectangleToDraw = tile.Rectangle;
-            // Draw top line
-            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+            switch (_theme.BorderStyle)
+            {
+                case BorderStyle.None:
+                    break;
+                case BorderStyle.Drawn:
+                    // Draw top line
+                    spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, rectangleToDraw.Width, thicknessOfBorder), borderColor);
 
-            // Draw left line
-            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
+                    // Draw left line
+                    spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y, thicknessOfBorder, rectangleToDraw.Height), borderColor);
 
-            // Draw right line
-            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
-                                                  rectangleToDraw.Y,
-                                                  thicknessOfBorder,
-                                                  rectangleToDraw.Height), borderColor);
-            // Draw bottom line
-            spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+                    // Draw right line
+                    spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X + rectangleToDraw.Width - thicknessOfBorder,
+                                                          rectangleToDraw.Y,
+                                                          thicknessOfBorder,
+                                                          rectangleToDraw.Height), borderColor);
+                    // Draw bottom line
+                    spriteBatch.Draw(tile.BorderTexture, new Rectangle(rectangleToDraw.X, rectangleToDraw.Y + rectangleToDraw.Height - thicknessOfBorder, rectangleToDraw.Width, thicknessOfBorder), borderColor);
+                    break;
+                case BorderStyle.Overlay:
+                    spriteBatch.Draw(tile.BorderTexture, tile.Rectangle, borderColor);
+                    break;
+            }
         }
+
 
         private void DrawTileInfo(SpriteBatch spriteBatch)
         {

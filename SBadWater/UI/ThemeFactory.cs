@@ -30,6 +30,7 @@ namespace SBadWater.UI
                 BackgroundColor = ParseColor(themeDTO.BackgroundColor),
                 IsMouseVisible = themeDTO.IsMouseVisible,
                 TileStyle = Enum.Parse<TileStyle>(themeDTO.TileStyle),
+                BorderStyle = Enum.Parse<BorderStyle>(themeDTO.BorderStyle),
                 TileBorderTextures = themeDTO.TileBorderTextures.Select(t => _content.Load<Texture2D>(t)).ToArray(),
                 TileColorTextures = themeDTO.TileColorTextures.Select(t => _content.Load<Texture2D>(t)).ToArray()
             };

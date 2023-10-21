@@ -7,6 +7,7 @@
     "BackgroundColor": "#FF008B8B",
     "IsMouseVisible": true,
     "TileStyle": "Fixed",
+    "BorderStyle":  "Drawn",
     "TileBorderTextures": [
       "Pixel"
     ],
@@ -22,6 +23,7 @@
     "BackgroundColor": "#FF000000",
     "IsMouseVisible": false,
     "TileStyle": "Fixed",
+    "BorderStyle": "Drawn",
     "TileBorderTextures": [
       "Pixel"
     ],
@@ -37,6 +39,7 @@
     "BackgroundColor": "#FFB0C4DE",
     "IsMouseVisible": true,
     "TileStyle": "FixedRandom",
+    "BorderStyle": "Overlay",
     "TileBorderTextures": [
       "TileBorderSketch1",
       "TileBorderSketch2",

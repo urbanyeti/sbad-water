@@ -14,4 +14,11 @@
         Animated,
         AnimatedRandom
     }
+
+    public enum BorderStyle
+    {
+        None,
+        Drawn,
+        Overlay
+    }
 }
