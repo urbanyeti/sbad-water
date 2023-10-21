@@ -97,7 +97,7 @@ namespace SBadWater
             }
 
             //SetTheme(_theme);
-            _font = Content.Load<SpriteFont>("Cascadia");
+            _font = Content.Load<SpriteFont>("CascadiaMedium");
             _tileGrid = TileGrid.LoadFromConfig(_font, _themes[_currentTheme], "config//default_tiles.json");
         }
 

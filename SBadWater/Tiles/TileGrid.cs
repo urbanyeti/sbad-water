@@ -25,7 +25,6 @@ namespace SBadWater.Tiles
         private readonly Tile[] _tiles;
         private readonly InputManager _inputManager;
         private readonly Random _random = new();
-        private readonly SpriteFont _font;
         private readonly Dictionary<Tile, bool> _beamedTiles = new();
         private Tile _hoveredTile;
         private Tile _clickedTile;
@@ -43,11 +42,10 @@ namespace SBadWater.Tiles
             }
         }
 
-        public TileGrid(TileGridDTO config, Theme theme, SpriteFont font)
+        public TileGrid(TileGridDTO config, Theme theme)
         {
             _config = config;
             _theme = theme;
-            _font = font;
             _tiles = new Tile[Rows * Columns];
             _inputManager = new InputManager();
             _inputManager.OnButtonPressed += ButtonPressed;
@@ -64,10 +62,10 @@ namespace SBadWater.Tiles
                 for (int col = 0; col < Columns; col++)
                 {
                     int index = (row * Columns) + col;
-                    int x = (col * 10) + 120;
-                    int y = (row * 10) + 40;
+                    int x = (col * _config.TileSize) + 120;
+                    int y = (row * _config.TileSize) + 40;
 
-                    _tiles[index] = new Tile(new Rectangle(x, y, 10, 10), 0, col, row, index, PassableTiles[index], _theme, random: _random);
+                    _tiles[index] = new Tile(new Rectangle(x, y, _config.TileSize, _config.TileSize), 0, col, row, index, PassableTiles[index], _theme, random: _random);
 
                     if (col > 0)
                     {
@@ -125,13 +123,15 @@ namespace SBadWater.Tiles
             {
                 DrawTileInfo(spriteBatch);
             }
+
+            DrawInstructions(spriteBatch);
         }
 
         public static TileGrid LoadFromConfig(SpriteFont font, Theme theme, string path = "config//default_tiles.json")
         {
             string json = File.ReadAllText(path);
             TileGridDTO config = JsonConvert.DeserializeObject<TileGridDTO>(json);
-            return new TileGrid(config, theme, font);
+            return new TileGrid(config, theme);
         }
 
         private void MouseMoved(MouseState mouseState, MouseState oldMouseState)
@@ -279,23 +279,41 @@ namespace SBadWater.Tiles
 
         private void DrawTileInfo(SpriteBatch spriteBatch)
         {
-            int infoX = 540 /*some x-coordinate on the side*/;
-            int infoY = 140 /*some y-coordinate on the side*/;
-            int spacing = 30;  // Spacing between lines of text.
+            float infoX = _theme.TileInfoOffset.X;
+            float infoY = _theme.TileInfoOffset.Y;
+            float spacing = _theme.TileInfoSpacing;
 
-            spriteBatch.DrawString(_font, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), _theme.TextColor);
+            spriteBatch.DrawString(_theme.FontMedium, $"Index: {_hoveredTile.Index}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), _theme.TextColor);
+            spriteBatch.DrawString(_theme.FontMedium, $"X: {_hoveredTile.X}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), _theme.TextColor);
+            spriteBatch.DrawString(_theme.FontMedium, $"Y: {_hoveredTile.Y}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), _theme.TextColor);
+            spriteBatch.DrawString(_theme.FontMedium, $"Capacity: {_hoveredTile.Capacity}", new Vector2(infoX, infoY), _theme.TextColor);
             infoY += spacing;
 
-            spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), _theme.TextColor);
+            spriteBatch.DrawString(_theme.FontMedium, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), _theme.TextColor);
+        }
+
+        private void DrawInstructions(SpriteBatch spriteBatch)
+        {
+            float infoX = _theme.InstructionsOffset.X;
+            float infoY = _theme.InstructionsOffset.Y;
+            float spacing = _theme.InstructionsSpacing;
+
+            spriteBatch.DrawString(_theme.FontSmall, "LMB: Create water", new Vector2(infoX, infoY), _theme.TextColor);
+            infoY += spacing;
+            spriteBatch.DrawString(_theme.FontSmall, "RMB: Absorb water", new Vector2(infoX, infoY), _theme.TextColor);
+            infoY += spacing;
+            spriteBatch.DrawString(_theme.FontSmall, "MMB: Build tiles", new Vector2(infoX, infoY), _theme.TextColor);
+            infoY += spacing;
+            spriteBatch.DrawString(_theme.FontSmall, "TAB: Cycle theme", new Vector2(infoX, infoY), _theme.TextColor);
+            infoY += spacing;
+            spriteBatch.DrawString(_theme.FontSmall, "ESC: Exit", new Vector2(infoX, infoY), _theme.TextColor);
+
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-  "Version": "1.0",
+  "TileSize": 10,
   "Columns": 40,
   "Rows": 40,
   "PassableTiles": [

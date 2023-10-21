@@ -3,25 +3,8 @@
     "Name": "Classic",
     "TextColor": "#FFFFFFFF",
     "SpriteColor": "#FF6495ED",
-    "BlockColor": "#FF808080",  
+    "BlockColor": "#FF808080",
     "BackgroundColor": "#FF008B8B",
-    "IsMouseVisible": true,
-    "TileStyle": "Fixed",
-    "BorderStyle":  "Drawn",
-    "TileBorderTextures": [
-      "Pixel"
-    ],
-    "TileColorTextures": [
-      "Pixel"
-    ]
-  },
-  {
-    "Name": "Retro",
-    "TextColor": "#FF1EFF00",
-    "SpriteColor": "#FF1EFF00",
-    "BlockColor": "#FF006400",
-    "BackgroundColor": "#FF000000",
-    "IsMouseVisible": false,
     "TileStyle": "Fixed",
     "BorderStyle": "Drawn",
     "TileBorderTextures": [
@@ -29,7 +12,37 @@
     ],
     "TileColorTextures": [
       "Pixel"
-    ]
+    ],
+    "FontSmall": "CascadiaSmall",
+    "FontMedium": "CascadiaMedium",
+    "TileInfoOffset": "540,80",
+    "TileInfoSpacing": 30,
+    "InstructionsOffset": "540,280",
+    "InstructionsSpacing":  20,
+    "IsMouseVisible": true
+
+  },
+  {
+    "Name": "Retro",
+    "TextColor": "#FF1EFF00",
+    "SpriteColor": "#FF1EFF00",
+    "BlockColor": "#FF006400",
+    "BackgroundColor": "#FF000000",
+    "TileStyle": "Fixed",
+    "BorderStyle": "Drawn",
+    "TileBorderTextures": [
+      "Pixel"
+    ],
+    "TileColorTextures": [
+      "Pixel"
+    ],
+    "FontSmall": "CascadiaSmall",
+    "FontMedium": "CascadiaMedium",
+    "TileInfoOffset": "540,80",
+    "TileInfoSpacing": 30,
+    "InstructionsOffset": "540,280",
+    "InstructionsSpacing": 20,
+    "IsMouseVisible": false
   },
   {
     "Name": "Sketch",
@@ -37,7 +50,6 @@
     "SpriteColor": "#FF6495ED",
     "BlockColor": "#FF483D8B",
     "BackgroundColor": "#FFB0C4DE",
-    "IsMouseVisible": true,
     "TileStyle": "FixedRandom",
     "BorderStyle": "Overlay",
     "TileBorderTextures": [
@@ -59,6 +71,13 @@
       "TileColor6",
       "TileColor7",
       "TileColor8"
-    ]
+    ],
+    "FontSmall": "CascadiaSmall",
+    "FontMedium": "CascadiaMedium",
+    "TileInfoOffset": "540,80",
+    "TileInfoSpacing": 30,
+    "InstructionsOffset": "540,280",
+    "InstructionsSpacing": 20,
+    "IsMouseVisible": true
   }
 ]

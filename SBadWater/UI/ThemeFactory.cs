@@ -25,11 +25,18 @@ namespace SBadWater.UI
                 SpriteColor = ParseColor(themeDTO.SpriteColor),
                 BlockColor = ParseColor(themeDTO.BlockColor),
                 BackgroundColor = ParseColor(themeDTO.BackgroundColor),
-                IsMouseVisible = themeDTO.IsMouseVisible,
                 TileStyle = Enum.Parse<TileStyle>(themeDTO.TileStyle),
                 BorderStyle = Enum.Parse<BorderStyle>(themeDTO.BorderStyle),
                 TileBorderTextures = themeDTO.TileBorderTextures.Select(t => _content.Load<Texture2D>(t)).ToArray(),
-                TileColorTextures = themeDTO.TileColorTextures.Select(t => _content.Load<Texture2D>(t)).ToArray()
+                TileColorTextures = themeDTO.TileColorTextures.Select(t => _content.Load<Texture2D>(t)).ToArray(),
+                FontSmall = _content.Load<SpriteFont>(themeDTO.FontSmall),
+                FontMedium = _content.Load<SpriteFont>(themeDTO.FontMedium),
+                TileInfoOffset = ParseVector(themeDTO.TileInfoOffset),
+                TileInfoSpacing = themeDTO.TileInfoSpacing,
+                InstructionsOffset = ParseVector(themeDTO.InstructionsOffset),
+                InstructionsSpacing = themeDTO.InstructionsSpacing,
+                IsMouseVisible = themeDTO.IsMouseVisible,
+
             };
 
             return theme;
@@ -45,6 +52,12 @@ namespace SBadWater.UI
         {
             System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(colorHex);
             return new(color.R, color.G, color.B);
+        }
+
+        public static Vector2 ParseVector(string vector)
+        { 
+            string[] split = vector.Split(',');
+            return new Vector2(float.Parse(split[0]), float.Parse(split[1]));
         }
     }
 }
