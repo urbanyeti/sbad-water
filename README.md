@@ -1,11 +1,16 @@
 # SuperBaddy Water Physics
 MonoGame 2D water physics simulation
-![SBadWater_7kJMKNtVSK](https://github.com/urbanyeti/sbad-water/assets/740011/305bda38-f071-438d-9ff5-89aae148fa07)
+![SBadWater_Fy3NATdtdm](https://github.com/urbanyeti/sbad-water/assets/740011/c1b618f4-19d7-4f72-89a2-f8fce1a49b9a)
 
 ## Features
 ### Simulate flow with `left-click`
-![SBadWater_EFdfmhGEUO](https://github.com/urbanyeti/sbad-water/assets/740011/57fd1f08-f352-49d3-92a0-83aa9396e6f4)
+![SBadWater_ZIxm0kyvMF](https://github.com/urbanyeti/sbad-water/assets/740011/82a74280-7aef-406c-9c3b-70aed79e64f9)
+
 ### Absorb water with `right-click`
-![SBadWater_KILM1gBDir](https://github.com/urbanyeti/sbad-water/assets/740011/7dcbb15c-5d91-42d5-8c06-0e5837ca4e68)
+![SBadWater_F75qZ73jR1](https://github.com/urbanyeti/sbad-water/assets/740011/022b18fc-2e5f-49aa-84a1-b29291ce1118)
+
+### Build / destroy block tiles with `middle-click`
+![SBadWater_aAx2gg9Q1Y](https://github.com/urbanyeti/sbad-water/assets/740011/7654b914-0ed5-414f-8200-3e6ef1ff07c6)
+
 ### Cycle through themes with `tab`
-![SBadWater_tJK7aq6JV4](https://github.com/urbanyeti/sbad-water/assets/740011/90f01464-bee3-4c41-93de-f614291e0543)
+![SBadWater_A2XFFbw9sV](https://github.com/urbanyeti/sbad-water/assets/740011/32f288cd-8677-4d66-9af8-a3258e6384fe)
