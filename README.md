@@ -1,8 +1,12 @@
 # SuperBaddy Water Physics
-MonoGame 2D water physics simulation
+Interactive 2D water physics using [MonoGame(https://www.monogame.net/)] game engine.
 ![SBadWater_Fy3NATdtdm](https://github.com/urbanyeti/sbad-water/assets/740011/c1b618f4-19d7-4f72-89a2-f8fce1a49b9a)
 
 ## Features
+- Create and remove water to simulate water flow
+- Customize tile grids with interactive build mode or read them from JSON files
+- Toggle graphics on the fly with configurable themes
+
 ### Simulate flow with `left-click`
 ![SBadWater_ZIxm0kyvMF](https://github.com/urbanyeti/sbad-water/assets/740011/82a74280-7aef-406c-9c3b-70aed79e64f9)
 
