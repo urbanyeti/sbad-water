@@ -6,7 +6,6 @@ using SBadWater.IO;
 using SBadWater.UI;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -21,7 +20,7 @@ namespace SBadWater.Tiles
         public Color TextColor => _theme.TextColor;
         public Texture2D[] TileBorderTextures => _theme.TileBorderTextures;
         public Texture2D[] TileColorTextures => _theme.TileColorTextures;
-        private TileGridConfig _config;
+        private readonly TileGridConfig _config;
 
         private readonly LiquidTile[] _tiles;
         private readonly InputManager _inputManager;
@@ -164,7 +163,6 @@ namespace SBadWater.Tiles
             {
                 BuildHoveredTile();
             }
-
         }
 
         private void ButtonPressed(InputKey key, float holdDurationMs)
@@ -214,12 +212,11 @@ namespace SBadWater.Tiles
                     BuildHoveredTile();
                 }
             }
-
         }
 
         private void BuildHoveredTile()
         {
-            if (_hoveredTile == null) {  return; }
+            if (_hoveredTile == null) { return; }
             switch (_buildMode)
             {
                 case TileBuildMode.Empty:
@@ -232,7 +229,7 @@ namespace SBadWater.Tiles
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unsupported build mode: {_buildMode}");
-                    }
+            }
         }
 
         private void ButtonReleased(InputKey key)
@@ -301,7 +298,4 @@ namespace SBadWater.Tiles
             spriteBatch.DrawString(_font, $"Passable: {_hoveredTile.Passable}", new Vector2(infoX, infoY), _theme.TextColor);
         }
     }
-
-
-
 }

@@ -8,10 +8,7 @@ namespace SBadWater.Tiles
     public class LiquidTile
     {
         public Rectangle Rectangle { get; set; }
-        public Color Color
-        {
-            get => Passable ? new Color(_color, Capacity) : _blockColor;
-        }
+        public Color Color => Passable ? new Color(_color, Capacity) : _blockColor;
         public int Capacity { get; set; }
         public Texture2D ColorTexture { get; set; }
         public Texture2D BorderTexture { get; set; }

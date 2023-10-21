@@ -3,16 +3,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SBadWater.UI
 {
     public class ThemeFactory
     {
-        private ContentManager _content;
+        private readonly ContentManager _content;
 
         public ThemeFactory(ContentManager content)
         {
@@ -40,7 +37,7 @@ namespace SBadWater.UI
 
         public Theme CreateThemeFromJson(string json)
         {
-            var themeData = JsonConvert.DeserializeObject<ThemeDTO>(json);
+            ThemeDTO themeData = JsonConvert.DeserializeObject<ThemeDTO>(json);
             return CreateThemeFromDTO(themeData);
         }
 

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SBadWater.Tiles
+﻿namespace SBadWater.Tiles
 {
-    enum TileBuildMode
+    internal enum TileBuildMode
     {
         Empty,
         Block
