@@ -9,6 +9,7 @@ namespace SBadWater.IO
     {
         LeftButton,
         RightButton,
+        MiddleButton
     }
 
     public class InputManager
@@ -58,6 +59,7 @@ namespace SBadWater.IO
 
             CheckButtonPress(InputKey.LeftButton, _mouseState?.LeftButton, _oldMouseState?.LeftButton, elapsedTimeMs);
             CheckButtonPress(InputKey.RightButton, _mouseState?.RightButton, _oldMouseState?.RightButton, elapsedTimeMs);
+            CheckButtonPress(InputKey.MiddleButton, _mouseState?.MiddleButton, _oldMouseState?.MiddleButton, elapsedTimeMs);
 
             _oldMouseState = _mouseState;
         }

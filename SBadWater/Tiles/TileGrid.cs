@@ -20,71 +20,8 @@ namespace SBadWater.Tiles
         public bool[] PassableTiles => _config.PassableTiles;
         public Color TextColor => _theme.TextColor;
         public Texture2D[] TileBorderTextures => _theme.TileBorderTextures;
-        //{
-        //    get { return _tileBorderTextures; }
-        //    set
-        //    {
-        //        _tileBorderTextures = value;
-        //        if (_tileBorderTextures == null)
-        //        {
-        //            _tileBorderIndex = null;
-        //            return;
-        //        }
-
-        //        _tileBorderIndex = new int[_tiles.Length];
-        //        Random random = new();
-        //        for (int i= 0; i < _tiles.Length; i++)
-        //        {
-        //            _tileBorderIndex[i] = random.Next(_tileBorderTextures.Length);
-        //        }
-        //    }
-        //}
-
         public Texture2D[] TileColorTextures => _theme.TileColorTextures;
-        //{
-        //    get { return _tileColorTextures; }
-        //    set
-        //    {
-        //        _tileColorTextures = value;
-        //        if (_tileColorTextures == null)
-        //        {
-        //            _tileColorTextures = null;
-        //            return;
-        //        }
-
-        //        _tileColorIndex = new int[_tiles.Length];
-        //        Random random = new();
-        //        for (int i = 0; i < _tiles.Length; i++)
-        //        {
-        //            _tileColorIndex[i] = random.Next(_tileColorTextures.Length);
-        //        }
-        //    }
-        //}
-
-        //public ThemeType Theme
-        //{
-        //    get { return _theme; }
-        //    set
-        //    {
-        //        _theme = value;
-        //        switch (_theme)
-        //        {
-        //            case ThemeType.Classic:
-        //                _textColor = Color.White;
-        //                break;
-        //            case ThemeType.Retro:
-        //                string hex = "#1EFF00";
-        //                System.Drawing.Color color = System.Drawing.ColorTranslator.FromHtml(hex);
-        //                _textColor = new(color.R, color.G, color.B);
-        //                break;
-        //            case ThemeType.Sketch:
-        //                _textColor = Color.DarkSlateBlue;
-        //                break;
-        //        }
-        //    }
-        //}
-
-        private readonly TileGridConfig _config;
+        private TileGridConfig _config;
 
         private readonly LiquidTile[] _tiles;
         private readonly InputManager _inputManager;
@@ -94,6 +31,7 @@ namespace SBadWater.Tiles
         private LiquidTile _hoveredTile;
         private LiquidTile _clickedTile;
         private Theme _theme;
+        private TileBuildMode _buildMode;
 
 
         public void SetTheme(Theme theme)
@@ -119,8 +57,6 @@ namespace SBadWater.Tiles
 
             CreateTiles();
         }
-
-
 
         private void CreateTiles()
         {
@@ -224,6 +160,11 @@ namespace SBadWater.Tiles
                 ButtonPressed(InputKey.RightButton, 0f);
             }
 
+            if (mouseState.MiddleButton == ButtonState.Pressed && _hoveredTile != oldHoverTile)
+            {
+                BuildHoveredTile();
+            }
+
         }
 
         private void ButtonPressed(InputKey key, float holdDurationMs)
@@ -264,6 +205,34 @@ namespace SBadWater.Tiles
                     }
                 }
             }
+
+            if (key == InputKey.MiddleButton)
+            {
+                if (holdDurationMs == 0) // Initial click and not a hold
+                {
+                    _buildMode = _hoveredTile.Passable ? TileBuildMode.Block : TileBuildMode.Empty;
+                    BuildHoveredTile();
+                }
+            }
+
+        }
+
+        private void BuildHoveredTile()
+        {
+            if (_hoveredTile == null) {  return; }
+            switch (_buildMode)
+            {
+                case TileBuildMode.Empty:
+                    _hoveredTile.Passable = true;
+                    break;
+                case TileBuildMode.Block:
+                    _config.PassableTiles[_hoveredTile.Index] = false;
+                    _hoveredTile.Passable = false;
+                    _hoveredTile.Capacity = 0;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"Unsupported build mode: {_buildMode}");
+                    }
         }
 
         private void ButtonReleased(InputKey key)
